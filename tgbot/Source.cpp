@@ -6,6 +6,7 @@
 
 using namespace std;
 int x = 0;
+
 //создаем/открываем базу данных 
 SQLite::Database db("data_base_for_tgbot.db3", SQLite::OPEN_READWRITE | SQLite::OPEN_CREATE);
 
@@ -34,6 +35,7 @@ int main() {
 
     bot.getEvents().onCommand("start", [&bot](TgBot::Message::Ptr message) {
         bot.getApi().sendMessage(message->chat->id, "Hi! I entered the number from 1 to 50. Guess him!");
+        //bot.getApi().sendMessage(message->chat->id, "But first enter your name:");
         x = rand() % 50 + 1;
         cout << x << endl;
 
@@ -55,6 +57,10 @@ int main() {
                     //добавляем данные
                     SQLite::Statement query(db, "INSERT INTO users (idTg) VALUES(?)");
                     query.bind(1, message->chat->id);
+                    query.exec();
+
+                    SQLite::Statement query(db, "INSERT INTO users (x) VALUES(?)");
+                    query.bind(1, x);
                     query.exec();
                 }
             }
